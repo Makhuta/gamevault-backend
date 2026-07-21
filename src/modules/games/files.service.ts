@@ -875,7 +875,7 @@ export class FilesService implements OnApplicationBootstrap {
         speedlimitHeader || configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_IN_KBPS;
     }
     this.logger.debug({
-        message: `Speed limit header: ${speedlimitHeader}, CRON: ${configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_SCHEDULE}`,
+      message: `Speed limit header: ${speedlimitHeader}, CRON: ${configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_SCHEDULE}`,
     });
     speedlimitHeader *= 1024;
 
