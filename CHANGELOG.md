@@ -1,5 +1,15 @@
 # GameVault Backend Server Changelog
 
+## 16.4.0
+
+### Changes
+
+- Added scheduler for download bandwidth limiter
+  - **SERVER_MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_IN_SCHEDULE** is used for limiting download speed when within schedule (if not defined **SERVER_MAX_DOWNLOAD_BANDWIDTH_IN_KBPS** is used)
+  - **SERVER_MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_OUT_SCHEDULE** is used for limiting download speed when not within schedule
+  - **SERVER_MAX_DOWNLOAD_BANDWIDTH_SCHEDULE** is used to define schedule using CRON
+
+
 ## 16.3.0
 
 ### Changes

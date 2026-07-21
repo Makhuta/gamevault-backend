@@ -5,7 +5,7 @@ import { WebUIService } from "./web-ui.service";
 jest.mock("../../configuration", () => ({
   __esModule: true,
   default: {
-    SERVER: { VERSION: "16.3.0" },
+    SERVER: { VERSION: "16.4.0" },
     WEB_UI: { VERSION: undefined },
     VOLUMES: { CONFIG: "/tmp/gamevault-config" },
   },
@@ -56,7 +56,7 @@ describe("WebUIService", () => {
     it("should fetch releases and cache selected compatible version when not cached", async () => {
       const config = jest.requireMock("../../configuration").default;
       config.WEB_UI.VERSION = undefined;
-      config.SERVER.VERSION = "16.3.0";
+      config.SERVER.VERSION = "16.4.0";
 
       jest.spyOn(service as any, "isCached").mockResolvedValue(false);
       const ensureSpy = jest
