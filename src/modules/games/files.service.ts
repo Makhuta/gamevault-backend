@@ -826,18 +826,23 @@ export class FilesService implements OnApplicationBootstrap {
         currentDate: date,
       });
 
-      const next = interval.next().toDate();
-
       return (
-        next.getFullYear() === date.getFullYear() &&
-        next.getMonth() === date.getMonth() &&
-        next.getDate() === date.getDate() &&
-        next.getHours() === date.getHours() &&
-        next.getMinutes() === date.getMinutes()
+        this.isSameMinute(interval.prev().toDate(), date) ||
+        this.isSameMinute(interval.next().toDate(), date)
       );
     } catch {
       return false;
     }
+  }
+
+  private isSameMinute(a: Date, b: Date): boolean {
+    return (
+      a.getFullYear() === b.getFullYear() &&
+      a.getMonth() === b.getMonth() &&
+      a.getDate() === b.getDate() &&
+      a.getHours() === b.getHours() &&
+      a.getMinutes() === b.getMinutes()
+    );
   }
 
   /** Handles the download request for a game, including on-the-fly archiving if needed. */
