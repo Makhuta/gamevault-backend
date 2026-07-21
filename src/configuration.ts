@@ -9,6 +9,7 @@ import { join } from "path";
 import { parse as parseYaml } from "yaml";
 import packageJson from "../package.json";
 import globals from "./globals";
+import { CronExpressionParser } from "cron-parser";
 
 dotenv.config();
 
@@ -194,6 +195,30 @@ function parseKibibytesToBytes(
   return bytes;
 }
 
+function parseCron(
+  environmentVariable: string,
+  defaultValue?: string,
+): string | undefined {
+  if (environmentVariable && isValidCron(environmentVariable)) {
+    return environmentVariable;
+  }
+
+  if (defaultValue && isValidCron(defaultValue)) {
+    return defaultValue;
+  }
+
+  return undefined;
+}
+
+function isValidCron(expression: string): boolean {
+  try {
+    CronExpressionParser.parse(expression);
+    return true;
+  } catch {
+    return false;
+  }
+}
+
 function safeHash(value: string | undefined): string | null {
   if (!value) {
     return null;
@@ -238,6 +263,15 @@ const configuration = {
     ADMIN_PASSWORD: resolveEnv("SERVER_ADMIN_PASSWORD") || undefined,
     MAX_DOWNLOAD_BANDWIDTH_IN_KBPS: parseKibibytesToBytes(
       resolveEnv("SERVER_MAX_DOWNLOAD_BANDWIDTH_IN_KBPS"),
+    ),
+    MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_IN_SCHEDULE: parseKibibytesToBytes(
+      resolveEnv("SERVER_MAX_DOWNLOAD_BANDWIDTH_IN_KBPS") || resolveEnv("SERVER_MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_IN_SCHEDULE"),
+    ),
+    MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_OUT_SCHEDULE: parseKibibytesToBytes(
+      resolveEnv("MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_OUT_SCHEDULE"),
+    ),
+    MAX_DOWNLOAD_BANDWIDTH_SCHEDULE: parseCron(
+      resolveEnv("MAX_DOWNLOAD_BANDWIDTH_SCHEDULE"),
     ),
     ONLINE_ACTIVITIES_DISABLED: parseBooleanEnvVariable(
       resolveEnv("SERVER_ONLINE_ACTIVITIES_DISABLED"),

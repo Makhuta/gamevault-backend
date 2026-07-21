@@ -40,6 +40,7 @@ import { File } from "./models/file.model";
 import { GameExistence } from "./models/game-existence.enum";
 import { GameType } from "./models/game-type.enum";
 import { RangeHeader } from "./models/range-header.model";
+import { CronExpressionParser } from "cron-parser";
 
 @Injectable()
 export class FilesService implements OnApplicationBootstrap {
@@ -819,6 +820,26 @@ export class FilesService implements OnApplicationBootstrap {
     this.schedulerRegistry.addTimeout(timeoutName, timeout);
   }
 
+  private isCurrentTimeInCron(expression: string, date = new Date()): boolean {
+    try {
+      const interval = CronExpressionParser.parse(expression, {
+        currentDate: date,
+      });
+
+      const next = interval.next().toDate();
+
+      return (
+        next.getFullYear() === date.getFullYear() &&
+        next.getMonth() === date.getMonth() &&
+        next.getDate() === date.getDate() &&
+        next.getHours() === date.getHours() &&
+        next.getMinutes() === date.getMinutes()
+      );
+    } catch {
+      return false;
+    }
+  }
+
   /** Handles the download request for a game, including on-the-fly archiving if needed. */
   public async download(
     response: Response,
@@ -828,8 +849,16 @@ export class FilesService implements OnApplicationBootstrap {
     filterByAge?: number,
   ): Promise<StreamableFile> {
     // Set the download speed limit if provided, otherwise use the default value from configuration.
-    speedlimitHeader =
-      speedlimitHeader || configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_IN_KBPS;
+    speedlimitHeader = 0;
+    if(configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_SCHEDULE) {
+      if(this.isCurrentTimeInCron(configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_SCHEDULE)) {
+        speedlimitHeader = speedlimitHeader || configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_IN_SCHEDULE || configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_IN_KBPS;
+      } else {
+        speedlimitHeader = speedlimitHeader || configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_OUT_SCHEDULE || configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_IN_KBPS;
+      }
+    } else {
+      speedlimitHeader = speedlimitHeader || configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_IN_KBPS;
+    }
     speedlimitHeader *= 1024;
 
     // Find the game by ID.
