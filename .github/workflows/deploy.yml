@@ -57,7 +57,6 @@ jobs:
         with:
           platforms: ${{ matrix.platform }}
           tags: |
-            makhuta/gamevault-backend
             ghcr.io/makhuta/gamevault-backend
           outputs: type=image,push-by-digest=true,name-canonical=true,push=true
           cache-from: type=gha
@@ -117,15 +116,12 @@ jobs:
 
           case "$BRANCH" in
             master|hotfix)
-              push_manifest "makhuta/gamevault-backend" "latest $VERSION"
               push_manifest "ghcr.io/makhuta/gamevault-backend" "latest $VERSION"
               ;;
             develop)
-              push_manifest "makhuta/gamevault-backend" "unstable"
               push_manifest "ghcr.io/makhuta/gamevault-backend" "unstable"
               ;;
             early-access)
-              push_manifest "makhuta/gamevault-backend" "early-access"
               push_manifest "ghcr.io/makhuta/gamevault-backend" "early-access"
               ;;
           esac
