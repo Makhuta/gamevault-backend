@@ -877,7 +877,7 @@ export class FilesService implements OnApplicationBootstrap {
     this.logger.debug({
       message: `Speed limit header: ${speedlimitHeader}, CRON: ${configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_SCHEDULE}`,
     });
-    speedlimitHeader *= 1024;
+    //speedlimitHeader *= 1024;
 
     // Find the game by ID.
     const game = await this.gamesService.findOneByGameIdOrFail(gameId, {
