@@ -1,5 +1,6 @@
 import { registerAs } from "@nestjs/config";
 import bytes from "bytes";
+import { CronExpressionParser } from "cron-parser";
 import { createHash, randomBytes } from "crypto";
 import * as dotenv from "dotenv";
 import { existsSync } from "fs";
@@ -9,7 +10,6 @@ import { join } from "path";
 import { parse as parseYaml } from "yaml";
 import packageJson from "../package.json";
 import globals from "./globals";
-import { CronExpressionParser } from "cron-parser";
 
 dotenv.config();
 
@@ -265,7 +265,8 @@ const configuration = {
       resolveEnv("SERVER_MAX_DOWNLOAD_BANDWIDTH_IN_KBPS"),
     ),
     MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_IN_SCHEDULE: parseKibibytesToBytes(
-      resolveEnv("SERVER_MAX_DOWNLOAD_BANDWIDTH_IN_KBPS") || resolveEnv("SERVER_MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_IN_SCHEDULE"),
+      resolveEnv("SERVER_MAX_DOWNLOAD_BANDWIDTH_IN_KBPS") ||
+        resolveEnv("SERVER_MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_IN_SCHEDULE"),
     ),
     MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_OUT_SCHEDULE: parseKibibytesToBytes(
       resolveEnv("MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_OUT_SCHEDULE"),

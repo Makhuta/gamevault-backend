@@ -174,9 +174,11 @@ export class IgdbMetadataProviderService extends MetadataProvider {
       provider_data_id: game.id?.toString(),
       provider_data_url: game.url,
       title: game.name,
-      release_date: isNaN(new Date(game.first_release_date * 1000).getTime())
+      release_date: isNaN(
+        new Date(Number(game.first_release_date) * 1000).getTime(),
+      )
         ? undefined
-        : new Date(game.first_release_date * 1000),
+        : new Date(Number(game.first_release_date) * 1000),
       description:
         game.summary && game.storyline
           ? `${game.summary}\n\n${game.storyline}`
@@ -271,7 +273,7 @@ export class IgdbMetadataProviderService extends MetadataProvider {
       provider_data_id: game.id?.toString(),
       title: game.name,
       description: game.summary || game.storyline || null,
-      release_date: new Date(game.first_release_date * 1000),
+      release_date: new Date(Number(game.first_release_date) * 1000),
       cover_url: this.replaceUrl(game.cover?.url, "t_thumb", "t_cover_big_2x"),
     } as MinimalGameMetadataDto;
   }
@@ -300,8 +302,7 @@ export class IgdbMetadataProviderService extends MetadataProvider {
         .execute();
 
       const timeToBeat = result.data?.[0] as
-        | igdbModels.IGameTimeToBeat
-        | undefined;
+        igdbModels.IGameTimeToBeat | undefined;
 
       if (timeToBeat?.normally) {
         const minutes = Math.round(timeToBeat.normally / 60);

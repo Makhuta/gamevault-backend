@@ -5,6 +5,7 @@ import {
 } from "@nestjs/common";
 import { SchedulerRegistry } from "@nestjs/schedule";
 import { constants } from "fs-extra";
+import path from "node:path";
 import { MetadataService } from "../metadata/metadata.service";
 import { FilesService } from "./files.service";
 import { GamesService } from "./games.service";
@@ -24,11 +25,11 @@ jest.mock("../../configuration", () => ({
       DEFAULT_ARCHIVE_PASSWORD: "",
       MAX_UPLOAD_SIZE: 1073741824,
     },
-    SERVER: { 
+    SERVER: {
       MAX_DOWNLOAD_BANDWIDTH_IN_KBPS: 0,
       MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_IN_SCHEDULE: 0,
       MAX_DOWNLOAD_BANDWIDTH_IN_KBPS_OUT_SCHEDULE: 0,
-      MAX_DOWNLOAD_BANDWIDTH_SCHEDULE: undefined
+      MAX_DOWNLOAD_BANDWIDTH_SCHEDULE: undefined,
     },
   },
 }));
@@ -162,14 +163,16 @@ describe("FilesService", () => {
         constants.W_OK,
       );
       expect(fsExtra.writeFile).toHaveBeenCalledWith(
-        "/tmp/test-files/My Game.zip",
+        path.join("/tmp/test-files", "My Game.zip"),
         expect.any(Buffer),
       );
       expect((service as any).index).toHaveBeenCalledWith(
-        "/tmp/test-files/My Game.zip",
+        path.join("/tmp/test-files", "My Game.zip"),
         expect.any(Object),
       );
-      expect(result).toEqual({ path: "/tmp/test-files/My Game.zip" });
+      expect(result).toEqual({
+        path: path.join("/tmp/test-files", "My Game.zip"),
+      });
     });
   });
 
