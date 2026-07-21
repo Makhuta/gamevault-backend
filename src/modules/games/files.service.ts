@@ -854,7 +854,6 @@ export class FilesService implements OnApplicationBootstrap {
     filterByAge?: number,
   ): Promise<StreamableFile> {
     // Set the download speed limit if provided, otherwise use the default value from configuration.
-    speedlimitHeader = 0;
     if (configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_SCHEDULE) {
       if (
         this.isCurrentTimeInCron(
@@ -875,6 +874,9 @@ export class FilesService implements OnApplicationBootstrap {
       speedlimitHeader =
         speedlimitHeader || configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_IN_KBPS;
     }
+    this.logger.debug({
+        message: `Speed limit header: ${speedlimitHeader}, CRON: ${configuration.SERVER.MAX_DOWNLOAD_BANDWIDTH_SCHEDULE}`,
+    });
     speedlimitHeader *= 1024;
 
     // Find the game by ID.
